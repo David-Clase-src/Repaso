@@ -10,6 +10,10 @@ import java.io.ObjectOutputStream;
 import com.davicro.core.serialization.DeserializationException;
 import com.davicro.core.serialization.ISerializer;
 
+/**
+ * Serialize an object into a binary file using <code>ObjectOutputStream</code>
+ * @param <T> The type of object to save and load
+ */
 public class BinarySerializer<T> implements ISerializer<T>{
 	private Class<T> type;
 	
