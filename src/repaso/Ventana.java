@@ -2,6 +2,7 @@ package repaso;
 
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
+import java.sql.SQLException;
 
 import javax.swing.JFrame;
 import java.awt.BorderLayout;
@@ -41,7 +42,7 @@ public class Ventana {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {		
+	public static void main(String[] args) {	
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {				
 				try {					
@@ -60,7 +61,7 @@ public class Ventana {
 	public Ventana() {
 		initialize();
 	}
-
+	
 	/**
 	 * Initialize the contents of the frame.
 	 */

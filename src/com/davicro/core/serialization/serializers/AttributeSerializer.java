@@ -10,13 +10,14 @@ import java.io.OutputStream;
 
 import com.davicro.core.IMapper;
 import com.davicro.core.serialization.DeserializationException;
+import com.davicro.core.serialization.IDataMapper;
 import com.davicro.core.serialization.ISerializer;
 
 public class AttributeSerializer<T> implements ISerializer<T> {
-	private IMapper<T, DataOutput> dataMapper;
+	private IDataMapper<T, DataOutput> dataMapper;
 	private IMapper<DataInput, T> objectMapper;
 	
-	public AttributeSerializer(IMapper<T, DataOutput> dataMapper, IMapper<DataInput, T> objectMapper) {
+	public AttributeSerializer(IDataMapper<T, DataOutput> dataMapper, IMapper<DataInput, T> objectMapper) {
 		this.dataMapper = dataMapper;
 		this.objectMapper = objectMapper;
 	}

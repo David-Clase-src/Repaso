@@ -12,12 +12,12 @@ public class DatabaseConnection {
 	
 	private Connection connection;
 	
-	public DatabaseConnection() {
-		try {
-			connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+	private DatabaseConnection() {
+			try {
+				connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 	}
 	
 	public static DatabaseConnection getInstance() {

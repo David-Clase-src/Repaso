@@ -1,7 +1,7 @@
 package com.davicro.core;
 
 /**
- * Maps from one object to another (creating the return type directly)
+ * Map from one object to another
  * @param <T> Source type
  * @param <O> Return type
  */

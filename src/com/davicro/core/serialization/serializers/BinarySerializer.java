@@ -14,7 +14,7 @@ public class BinarySerializer<T> implements ISerializer<T>{
 	private Class<T> type;
 	
 	public BinarySerializer(Class<T> classType) {
-		this.classType = classType;
+		this.type = classType;
 	}
 	
 	@Override
@@ -35,7 +35,7 @@ public class BinarySerializer<T> implements ISerializer<T>{
 		try(ObjectInputStream stream = new ObjectInputStream(new FileInputStream(file))) {
 			Object obj = stream.readObject();
 			
-			return classType.cast(obj);
+			return type.cast(obj);
 		} catch (ClassNotFoundException e) {
 			//If the class is not found, wrap it as a generic deserialization exception for the owner to handle
 			throw new DeserializationException(e.getMessage(), e);
