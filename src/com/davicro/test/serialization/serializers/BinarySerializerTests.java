@@ -16,20 +16,20 @@ import com.davicro.core.serialization.ISerializer;
 import com.davicro.core.serialization.serializers.BinarySerializer;
 
 class BinarySerializerTests {
-	private static final String FILEPATH = "person";
-	private static final Person person = new Person("Pat", 10, 1.1f);
+	private static final String FILEPATH = "person.bin";
+	private static final Person PERSON = new Person("Pat", 10, 1.1f);
 	private static final ISerializer<Person> serializer = new BinarySerializer<>(Person.class);
 	
 	@Test
 	void SaveTest() throws IOException {
-		serializer.save(FILEPATH, person);
+		serializer.save(FILEPATH, PERSON);
 	}
 	
 	@Test
 	void LoadTest() throws IOException, DeserializationException {
 		Person loaded = serializer.load(FILEPATH);
 
-		assertEquals(person, loaded);
+		assertEquals(PERSON, loaded);
 	}
 	
 	
@@ -39,12 +39,9 @@ class BinarySerializerTests {
 	}
 	
 	@Test
-	void CastExceptionTest() throws IOException {
+	void DeserializationExceptionTest() throws IOException {
 		ISerializer<String> stringSerializer = new BinarySerializer<>(String.class);
-		stringSerializer.save("string.txt", "Hello");
-		assertThrows(DeserializationException.class, () -> serializer.load("string.txt"));
-	}
-	
-	private static record Person(String name, int age, float money) implements Serializable {
+		stringSerializer.save("string.bin", "Hello");
+		assertThrows(DeserializationException.class, () -> serializer.load("string.bin"));
 	}
 }

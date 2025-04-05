@@ -4,103 +4,69 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
 
-import com.davicro.core.dao.DataAccessException;
-import com.davicro.core.dao.IDAO;
+import com.davicro.core.dao.AbstractDAO;
 
 import repaso.dto.Actor;
 
-public final class ActorDAO implements IDAO<Actor> {
-	private static final String SELECT_ALL_QUERY = "SELECT * FROM ACTOR;";
-	private static final String SELECT_WITH_ID_QUERY = "SELECT * FROM ACTOR WHERE actor_id=?";
-	private static final String INSERT_QUERY = "INSERT INTO ACTOR(actor_id, first_name, last_name) VALUES (?,?,?)";
-	private static final String UPDATE_QUERY = "UPDATE ACTOR SET first_name=?,last_name=? WHERE actor_id=?";
-	private static final String DELETE_QUERY = "DELETE FROM ACTOR WHERE actor_id=?";
-	
-	private final Connection connection;
-	
+public class ActorDAO extends AbstractDAO<Actor>{
+
 	public ActorDAO(Connection connection) {
-		this.connection = connection;
+		super(connection);
+	}
+
+	@Override
+	protected Actor mapRow(ResultSet rs) throws SQLException {
+		return new Actor(rs.getInt("actor_id"), rs.getString("first_name"), rs.getString("last_name"),
+					rs.getTimestamp("last_update"));
+	}
+
+	@Override
+	protected void setId(PreparedStatement statement, Actor obj) throws SQLException {
+		statement.setInt(1, obj.actor_id());
 	}
 	
 	@Override
-	public List<Actor> getAll() throws DataAccessException{
-		List<Actor> actors = new ArrayList<Actor>();
-		try(PreparedStatement statement = connection.prepareStatement(SELECT_ALL_QUERY);
-				ResultSet rs = statement.executeQuery()){
-			
-			while(rs.next()) {
-				Actor actor = mapActor(rs);
-				actors.add(actor);
-			}
-		} catch(SQLException e) {
-			throw new DataAccessException(e.getMessage(), e);
-		}
-		return actors;
+	protected void setId(PreparedStatement statement, long id) throws SQLException {
+		statement.setInt(1, (int)id);
 	}
 
 	@Override
-	public Actor get(long id) throws DataAccessException {
-		try(PreparedStatement statement = connection.prepareStatement(SELECT_WITH_ID_QUERY);){
-			statement.setInt(1, (int)id);
-			
-			List<Actor> actors = DAOUtils.mapResultSet(statement.executeQuery(), this::mapActor);
-			
-			if(actors.size() == 0)
-				return null;
-			else
-				return actors.get(0);
-		} catch(SQLException e) {
-			throw new DataAccessException(e.getMessage(), e);
-		}
+	protected void setUpdateParameters(PreparedStatement statement, Actor obj) throws SQLException {
+		statement.setString(1, obj.first_name());
+		statement.setString(2, obj.last_name());
+		statement.setInt(3, obj.actor_id());
 	}
 
 	@Override
-	public void save(Actor obj) throws DataAccessException {
-		try(PreparedStatement statement = connection.prepareStatement(INSERT_QUERY)){
-			statement.setInt(1, obj.actor_id());
-			statement.setString(2, obj.first_name());
-			statement.setString(3, obj.last_name());
-			
-			statement.executeUpdate();
-		} catch(SQLException e) {
-			throw new DataAccessException(e.getMessage(), e);
-		}
+	protected void setInsertParameters(PreparedStatement statement, Actor obj) throws SQLException {
+		statement.setInt(1, obj.actor_id());
+		statement.setString(2, obj.first_name());
+		statement.setString(3, obj.last_name());
 	}
 
 	@Override
-	public void update(Actor obj) throws DataAccessException {
-		try(PreparedStatement statement = connection.prepareStatement(UPDATE_QUERY)){
-			statement.setString(1, obj.first_name());
-			statement.setString(2, obj.last_name());
-			statement.setInt(3, obj.actor_id());
-			
-			statement.executeUpdate();
-		} catch(SQLException e) {
-			throw new DataAccessException(e.getMessage(), e);
-		}
+	protected String getSelectAllQuery() {
+		return "SELECT * FROM ACTOR";
 	}
 
 	@Override
-	public void delete(Actor obj) throws DataAccessException {
-		try(PreparedStatement statement = connection.prepareStatement(DELETE_QUERY)){
-			statement.setInt(1, obj.actor_id());
-			
-			statement.executeUpdate();
-		} catch(SQLException e) {
-			throw new DataAccessException(e.getMessage(), e);
-		}
+	protected String getSelectQuery() {
+		return "SELECT * FROM ACTOR WHERE actor_id = ?";
 	}
 
-	private Actor mapActor(ResultSet rs){
-		try {
-			return new Actor(rs.getInt("actor_id"), rs.getString("first_name"), rs.getString("last_name"),
-					rs.getTimestamp("last_update"));
-		} catch (SQLException e) {
-			return null;
-		}
+	@Override
+	protected String getUpdateQuery() {
+		return "UPDATE ACTOR SET first_name=?,last_name=? WHERE actor_id=?";
+	}
 
+	@Override
+	protected String getInsertQuery() {
+		return "INSERT INTO ACTOR(actor_id, first_name, last_name) VALUES (?,?,?)";
+	}
+
+	@Override
+	protected String getDeleteQuery() {
+		return "DELETE FROM ACTOR WHERE actor_id=?";
 	}
 }

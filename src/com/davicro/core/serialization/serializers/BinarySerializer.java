@@ -45,7 +45,7 @@ public class BinarySerializer<T> implements ISerializer<T>{
 			throw new DeserializationException(e.getMessage(), e);
 		} catch(ClassCastException e) {
 			//Same goes for a class cast exception, if we can't cast it, we can't really do much
-			throw new DeserializationException(e.getMessage(), e);
+			throw new DeserializationException("Could not cast object into the specified type", e);
 		}
 	}
 	

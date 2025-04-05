@@ -17,8 +17,11 @@ import javax.swing.border.EmptyBorder;
 import com.davicro.core.Messages;
 import com.davicro.core.dao.DataAccessException;
 import com.davicro.core.dao.DataAccessOperation;
+import com.davicro.core.dao.IDAO;
 import com.davicro.gui.LabelTextField;
+
 import repaso.dao.ActorDAO;
+import repaso.dao.ActorDAO_OLD;
 import repaso.dto.Actor;
 import com.davicro.gui.MessageBox;
 
@@ -27,7 +30,7 @@ public class Ventana {
 	private static final String LOG_WARNING = "WARNING";
 	private static final String LOG_ERROR = "ERROR";
 
-	private final ActorDAO actorDAO = new ActorDAO(DatabaseConnection.getInstance().getConnection());
+	private final IDAO<Actor> actorDAO = new ActorDAO(DatabaseConnection.getInstance().getConnection());
 	
 	private JFrame frame;
 	private JPanel fieldsPanel;
@@ -198,6 +201,7 @@ public class Ventana {
 			boolean success = actorOperation.execute(actor);
 			if(success) {
 				displayMessage(Messages.STATUS_OK, operationName);
+				displayActor(actorDAO.get(id)); //Only display actor when the operation succeeds
 			}
 		} catch(DataAccessException e) {
 			displayError(e.getMessage());
