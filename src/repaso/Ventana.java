@@ -21,7 +21,6 @@ import com.davicro.core.dao.IDAO;
 import com.davicro.gui.LabelTextField;
 
 import repaso.dao.ActorDAO;
-import repaso.dao.ActorDAO_OLD;
 import repaso.dto.Actor;
 import com.davicro.gui.MessageBox;
 
@@ -30,7 +29,7 @@ public class Ventana {
 	private static final String LOG_WARNING = "WARNING";
 	private static final String LOG_ERROR = "ERROR";
 
-	private final IDAO<Actor> actorDAO = new ActorDAO(DatabaseConnection.getInstance().getConnection());
+	private final IDAO<Actor, Integer> actorDAO = new ActorDAO(DatabaseConnection.getInstance().getConnection());
 	
 	private JFrame frame;
 	private JPanel fieldsPanel;

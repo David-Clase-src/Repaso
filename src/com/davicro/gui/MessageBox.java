@@ -12,7 +12,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 
 public class MessageBox extends JPanel {
-
+	public static final String DEFAULT_STYLE = "default";
+	
 	private static final long serialVersionUID = 1L;
 	private JTextPane textArea;
 	
@@ -24,6 +25,12 @@ public class MessageBox extends JPanel {
 		
 		JScrollPane scrollPane = new JScrollPane(textArea);
 		add(scrollPane, BorderLayout.CENTER);
+		
+		addStyle(DEFAULT_STYLE, Color.BLACK);
+	}
+	
+	public void appendMessage(String message) {
+		appendMessage(message, DEFAULT_STYLE);
 	}
 	
 	/**
@@ -36,6 +43,7 @@ public class MessageBox extends JPanel {
 		
 		try {
 			doc.insertString(doc.getLength(), message + "\n", textArea.getStyle(style));
+			textArea.setCaretPosition(doc.getLength());
 		} catch (BadLocationException e) {
 			e.printStackTrace();
 		}

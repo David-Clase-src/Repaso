@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public abstract class AbstractDAO<T> implements IDAO<T> {
+public abstract class AbstractDAO<T, TID> implements IDAO<T, TID> {
 	private final Connection connection;
 	
 	public AbstractDAO(Connection connection) {
@@ -30,7 +30,7 @@ public abstract class AbstractDAO<T> implements IDAO<T> {
 	}
 
 	@Override
-	public T get(long id) throws DataAccessException {
+	public T get(TID id) throws DataAccessException {
 		try(PreparedStatement statement = connection.prepareStatement(getSelectQuery())) {
 			setId(statement, id);
 			ResultSet rs = statement.executeQuery();
@@ -65,7 +65,7 @@ public abstract class AbstractDAO<T> implements IDAO<T> {
 	@Override
 	public void delete(T obj) throws DataAccessException {
 		try(PreparedStatement statement = connection.prepareStatement(getDeleteQuery())) {
-			setId(statement, obj);
+			setIdFromObj(statement, obj);
 			statement.executeUpdate();
 		} catch (SQLException e) {
 			throw new DataAccessException(e.getMessage(), e);
@@ -88,8 +88,8 @@ public abstract class AbstractDAO<T> implements IDAO<T> {
 	}
 	
 	protected abstract T mapRow(ResultSet rs) throws SQLException;
-	protected abstract void setId(PreparedStatement statement, T obj) throws SQLException;
-	protected abstract void setId(PreparedStatement statement, long id) throws SQLException;
+	protected abstract void setIdFromObj(PreparedStatement statement, T obj) throws SQLException;
+	protected abstract void setId(PreparedStatement statement, TID id) throws SQLException;
 	protected abstract void setUpdateParameters(PreparedStatement statement, T obj) throws SQLException;
 	protected abstract void setInsertParameters(PreparedStatement statement, T obj) throws SQLException;
 	

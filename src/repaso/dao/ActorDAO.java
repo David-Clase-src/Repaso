@@ -9,7 +9,7 @@ import com.davicro.core.dao.AbstractDAO;
 
 import repaso.dto.Actor;
 
-public class ActorDAO extends AbstractDAO<Actor>{
+public class ActorDAO extends AbstractDAO<Actor, Integer>{
 
 	public ActorDAO(Connection connection) {
 		super(connection);
@@ -22,12 +22,12 @@ public class ActorDAO extends AbstractDAO<Actor>{
 	}
 
 	@Override
-	protected void setId(PreparedStatement statement, Actor obj) throws SQLException {
+	protected void setIdFromObj(PreparedStatement statement, Actor obj) throws SQLException {
 		statement.setInt(1, obj.actor_id());
 	}
 	
 	@Override
-	protected void setId(PreparedStatement statement, long id) throws SQLException {
+	protected void setId(PreparedStatement statement, Integer id) throws SQLException {
 		statement.setInt(1, (int)id);
 	}
 
