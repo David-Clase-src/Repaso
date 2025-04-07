@@ -19,10 +19,12 @@ import com.davicro.core.dao.DataAccessException;
 import com.davicro.core.dao.DataAccessOperation;
 import com.davicro.core.dao.IDAO;
 import com.davicro.gui.LabelTextField;
+import com.davicro.gui.LookAndFeelUtils;
 
 import repaso.dao.ActorDAO;
 import repaso.dto.Actor;
 import com.davicro.gui.MessageBox;
+import java.awt.Component;
 
 public class Ventana {	
 	private static final String LOG_INFO = "INFO";
@@ -44,7 +46,7 @@ public class Ventana {
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {	
+	public static void main(String[] args) {			
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {				
 				try {					
@@ -119,10 +121,16 @@ public class Ventana {
 		
 		centerPanel = new JPanel();
 		frame.getContentPane().add(centerPanel, BorderLayout.CENTER);
-		centerPanel.setLayout(new BorderLayout(0, 0));
+		centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
 		
 		messageBox = new MessageBox();
-		centerPanel.add(messageBox, BorderLayout.CENTER);
+		centerPanel.add(messageBox);
+		
+		JButton clearButton = new JButton("Clear Log");
+		frame.getContentPane().add(clearButton, BorderLayout.SOUTH);
+		clearButton.addActionListener(e -> {
+			messageBox.clear();
+		});
 		
 		messageBox.addStyle(LOG_INFO, Color.BLACK);
 		messageBox.addStyle(LOG_WARNING, Color.YELLOW);
