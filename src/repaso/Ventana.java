@@ -1,6 +1,8 @@
 package repaso;
 
 import java.awt.EventQueue;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
 import java.sql.SQLException;
 
@@ -24,7 +26,18 @@ import com.davicro.gui.LookAndFeelUtils;
 import repaso.dao.ActorDAO;
 import repaso.dto.Actor;
 import com.davicro.gui.MessageBox;
+import com.davicro.lookselector.LookAndFeelSelectorWindow;
+import com.formdev.flatlaf.FlatDarculaLaf;
+import com.formdev.flatlaf.FlatDarkLaf;
+import com.formdev.flatlaf.FlatIntelliJLaf;
+import com.formdev.flatlaf.FlatLaf;
+import com.formdev.flatlaf.FlatLightLaf;
+import com.formdev.flatlaf.FlatPropertiesLaf;
+import com.formdev.flatlaf.themes.FlatMacDarkLaf;
+import com.formdev.flatlaf.themes.FlatMacLightLaf;
+
 import java.awt.Component;
+import java.awt.GridLayout;
 
 public class Ventana {	
 	private static final String LOG_INFO = "INFO";
@@ -33,7 +46,7 @@ public class Ventana {
 
 	private final IDAO<Actor, Integer> actorDAO = new ActorDAO(DatabaseConnection.getInstance().getConnection());
 	
-	private JFrame frame;
+	private JFrame frmAplicacion;
 	private JPanel fieldsPanel;
 	private LabelTextField fieldId;
 	private LabelTextField fieldName;
@@ -42,16 +55,24 @@ public class Ventana {
 	private JPanel buttonsPanel;
 	private JPanel centerPanel;
 	private MessageBox messageBox;
+	private JPanel bottomPanel;
 
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {			
+	public static void main(String[] args) {
+		FlatDarculaLaf.installLafInfo();
+		FlatLightLaf.installLafInfo();
+		FlatDarkLaf.installLafInfo();
+		FlatIntelliJLaf.installLafInfo();
+		FlatMacDarkLaf.installLafInfo();
+		FlatMacLightLaf.installLafInfo();
+		
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {				
 				try {					
 					Ventana window = new Ventana();
-					window.frame.setVisible(true);
+					window.frmAplicacion.setVisible(true);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -70,15 +91,16 @@ public class Ventana {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		frame = new JFrame();
-		frame.setBounds(100, 100, 450, 300);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(new BorderLayout(0, 0));
-		frame.setMinimumSize(new Dimension(500,300));
+		frmAplicacion = new JFrame();
+		frmAplicacion.setTitle("Aplicacion");
+		frmAplicacion.setBounds(100, 100, 450, 300);
+		frmAplicacion.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frmAplicacion.getContentPane().setLayout(new BorderLayout(0, 0));
+		frmAplicacion.setMinimumSize(new Dimension(500,300));
 		
 		JPanel topPanel = new JPanel();
 		topPanel.setBorder(new EmptyBorder(5, 5, 5, 0));
-		frame.getContentPane().add(topPanel, BorderLayout.NORTH);
+		frmAplicacion.getContentPane().add(topPanel, BorderLayout.NORTH);
 		topPanel.setLayout(new BoxLayout(topPanel, BoxLayout.Y_AXIS));
 		
 		fieldsPanel = new JPanel();
@@ -120,17 +142,33 @@ public class Ventana {
 		selectButton.addActionListener(this::selectAction);
 		
 		centerPanel = new JPanel();
-		frame.getContentPane().add(centerPanel, BorderLayout.CENTER);
+		frmAplicacion.getContentPane().add(centerPanel, BorderLayout.CENTER);
 		centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
 		
 		messageBox = new MessageBox();
 		centerPanel.add(messageBox);
 		
+		bottomPanel = new JPanel();
+		frmAplicacion.getContentPane().add(bottomPanel, BorderLayout.SOUTH);
+		bottomPanel.setLayout(new GridBagLayout());
+		GridBagConstraints gbc = new GridBagConstraints();
+
+		gbc.gridy = 0;
+
+		gbc.gridx = 0;
+		gbc.weightx = 0.9;
+		gbc.fill = GridBagConstraints.HORIZONTAL;
+		
 		JButton clearButton = new JButton("Clear Log");
-		frame.getContentPane().add(clearButton, BorderLayout.SOUTH);
-		clearButton.addActionListener(e -> {
-			messageBox.clear();
-		});
+		bottomPanel.add(clearButton, gbc);
+		clearButton.addActionListener(e -> messageBox.clear());
+		
+		gbc.gridx = 1;
+		gbc.weightx = 0.1;
+		
+		JButton lookSelectButton = new JButton("Select Look");
+		bottomPanel.add(lookSelectButton, gbc);
+		lookSelectButton.addActionListener(this::selectLookAction);
 		
 		messageBox.addStyle(LOG_INFO, Color.BLACK);
 		messageBox.addStyle(LOG_WARNING, Color.YELLOW);
@@ -184,6 +222,11 @@ public class Ventana {
 			displayActor(actor);
 			return true;
 		}, "SELECT");
+	}
+	
+	private void selectLookAction(ActionEvent e) {
+		LookAndFeelSelectorWindow selector = new LookAndFeelSelectorWindow(this.frmAplicacion);
+		selector.setVisible(true);
 	}
 	
 	/**
